@@ -28,24 +28,24 @@
         <div>
             <div style="background-color: #c7c7c7;">
                 <div style="margin: 0 300px">
-                  <form action="/send-data-add" method="POST" class="row g-3 mx-5">
+                  <form action="/send-edit-project/{{.ProjectData.Id}}" method="POST" class="row g-3 mx-5">
         
                     <h2 style="text-align: center; margin-top: 25px;">EDIT MY PROJECT</h2>
                     <div class="col-12">
                       <label for="inputProjectName" class="form-label">Project Name</label>
-                      <input type="text" class="form-control" id="inputProjectName" name="project-name" value="selectProject.ProjectName">
+                      <input type="text" class="form-control" id="inputProjectName" name="project-name" value="{{.ProjectData.ProjectName}}">
                     </div>
                     <div class="col-md-6">
                       <label for="input-strDate" class="form-label">Start Date</label>
-                      <input type="date" class="form-control" id="input-strDate" name="start-date" value="selectProject.StartDate">
+                      <input type="date" class="form-control" id="input-strDate" name="start-date" value="{{.ProjectData.StartDate}}">
                     </div>
                     <div class="col-md-6">
                       <label for="input-EndDate" class="form-label">End Date</label>
-                      <input type="date" class="form-control" id="input-EndDate" name="end-date" value="selectProject.EndDate">
+                      <input type="date" class="form-control" id="input-EndDate" name="end-date" value="{{.ProjectData.EndDate}}">
                     </div>
                     <div class="col-12">
                       <label for="inputDesc" class="form-label">Decription</label>
-                      <textarea class="form-control" id="inputDesc" name="desc-project" value="selectProject.Description"></textarea>
+                      <textarea class="form-control" id="inputDesc" name="desc-project">{{.ProjectData.Description}}</textarea>
                     </div>
                     <div>
                       <label class="col-12 mb-2" for="">Technologies</label>

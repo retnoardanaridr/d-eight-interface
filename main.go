@@ -22,6 +22,7 @@ func main() {
 	route.HandleFunc("/send-data-add", sendDataAdd).Methods("POST")
 	route.HandleFunc("/delete-project/{index}", deleteProject).Methods("GET")
 	route.HandleFunc("/edit-project/{index}", editProject).Methods("GET")
+	route.HandleFunc("/send-edit-project/{index}", updateProject).Methods("POST")
 
 	fmt.Println("Server running on port 8000")
 	http.ListenAndServe("localhost:8000", route)
@@ -108,11 +109,11 @@ func blogDetail(w http.ResponseWriter, r *http.Request) {
 		if index == i {
 			BlogDetail = Project{
 				ProjectName:  data.ProjectName,
-				StartDate:    data.StartDate,
+				StartDate:    data.StartDate, //duration
 				EndDate:      data.EndDate,
 				Description:  data.Description,
-				Technologies: data.Technologies, // masih belum fungsi
-				Image:        data.Image,        //masih belum fungsi
+				Technologies: data.Technologies,
+				Image:        data.Image, //masih belum fungsi
 			}
 		}
 	}
@@ -140,13 +141,6 @@ func sendDataAdd(w http.ResponseWriter, r *http.Request) {
 	var techno []string
 	techno = r.Form["techno"]
 	uploadImg := r.PostForm.Get("Imageee")
-
-	fmt.Println("Project Name : " + projectName)
-	fmt.Println("Start Date : " + startDate)
-	fmt.Println("End Date : " + endDate)
-	fmt.Println("Description : " + description)
-	fmt.Println(techno)
-	fmt.Println("Upload Image : " + uploadImg)
 
 	newProject := Project{
 		ProjectName:  projectName,
@@ -189,11 +183,12 @@ func editProject(w http.ResponseWriter, r *http.Request) {
 	for index, selectProject := range dataProject {
 		if id == index {
 			ProjectData = Project{
-				Id:          id,
-				ProjectName: selectProject.ProjectName,
-				StartDate:   selectProject.StartDate,
-				EndDate:     selectProject.EndDate,
-				Description: selectProject.Description,
+				Id:           id,
+				ProjectName:  selectProject.ProjectName,
+				StartDate:    selectProject.StartDate,
+				EndDate:      selectProject.EndDate,
+				Description:  selectProject.Description,
+				Technologies: selectProject.Technologies,
 			}
 			fmt.Println(ProjectData.Description)
 		}
@@ -204,4 +199,34 @@ func editProject(w http.ResponseWriter, r *http.Request) {
 
 	w.WriteHeader(http.StatusOK)
 	tmpl.Execute(w, response)
+}
+
+func updateProject(w http.ResponseWriter, r *http.Request) {
+	err := r.ParseForm()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	id, _ := strconv.Atoi((mux.Vars(r)["id"]))
+
+	projectName := r.PostForm.Get("project-name")
+	startDate := r.PostForm.Get("start-date")
+	endDate := r.PostForm.Get("end-date")
+	description := r.PostForm.Get("desc-project")
+	var techno []string
+	techno = r.Form["techno"]
+	uploadImg := r.PostForm.Get("Imageee")
+
+	newProject := Project{
+		ProjectName:  projectName,
+		StartDate:    startDate,
+		EndDate:      endDate,
+		Description:  description,
+		Technologies: techno,
+		Image:        uploadImg,
+	}
+
+	dataProject[id] = newProject
+
+	http.Redirect(w, r, "/", http.StatusMovedPermanently)
 }
